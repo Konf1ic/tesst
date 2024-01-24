@@ -1,70 +1,82 @@
 package com.main.product_validate.controller;
 
-import com.main.product_validate.model.Product;
+import com.main.product_validate.model.Products;
 import com.main.product_validate.repository.IProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 
 @Controller
-@RequestMapping("/product")
+@RequestMapping("/products")
 public class ProductController {
     @Autowired
-    IProductRepository iproductService;
+    IProductRepository iProductRepository;
 
-    @GetMapping("")
-    public String home(Model model){
-        List<Product> products = iproductService.findAll();
-        model.addAttribute("products", products);
-        return "/list";
+    @GetMapping
+    public ModelAndView showHome(){
+        ModelAndView modelAndView = new ModelAndView("/home");
+        modelAndView.addObject("lists", iProductRepository.findAll());
+        return modelAndView;
     }
 
-    @GetMapping("/product/create")
-    public String create(Model model){
-        model.addAttribute("products", new Product());
-        return "/create";
+    @GetMapping("/detail/{id}")
+    public ModelAndView showDetail(@PathVariable Long id){
+        ModelAndView modelAndView = new ModelAndView("/detail");
+        modelAndView.addObject("details", iProductRepository.findById(id));
+        return modelAndView;
     }
 
+    @GetMapping("/create")
+    public ModelAndView create(){
+        ModelAndView modelAndView = new ModelAndView("/create");
+        modelAndView.addObject("product", new Products());
+        return modelAndView;
+    }
     @PostMapping("/save")
-    public String save(@ModelAttribute Product product){
-        product.setId((int) (Math.random()*1000));
-        iproductService.save(product);
-        return "redirect:/product";
+    public ModelAndView save(Products products){
+        ModelAndView modelAndView = new ModelAndView("redirect:/products");
+        iProductRepository.save(products);
+        return modelAndView;
     }
 
-    @GetMapping("/{id}/edit")
-    public String edit(@PathVariable Integer id, Model model){
-        model.addAttribute("productEdit", iproductService.findById(id));
 
-        System.out.println(iproductService.findById(id));
-        return "/edit";
+    @GetMapping("/delete/{id}")
+    public ModelAndView create(@PathVariable Long id){
+        ModelAndView modelAndView = new ModelAndView("/delete");
+        modelAndView.addObject("product",iProductRepository.findById(id).get());
+        return modelAndView;
     }
-    @PostMapping("/update")
-    public String update(@ModelAttribute Product product) {
-        iproductService.save(product);
-        return "redirect:/product";
-    }
-
-    @GetMapping("/{id}/delete")
-    public String delete(@PathVariable Integer id, Model model) {
-        model.addAttribute("productDelete", iproductService.findById(id));
-        return "/delete";
-    }
-
     @PostMapping("/delete")
-    public String delete(@ModelAttribute Product product, RedirectAttributes redirect) {
-        iproductService.delete(product);
-        redirect.addFlashAttribute("success", "Removed product successful!");
-        return "redirect:/product";
+    public ModelAndView remove(Products products){
+        ModelAndView modelAndView = new ModelAndView("redirect:/products");
+        iProductRepository.delete(products);
+        return modelAndView;
     }
 
-    @GetMapping("/{id}/view")
-    public String view(@PathVariable int id, Model model) {
-        model.addAttribute("productView", iproductService.findById(id));
-        return "/view";
+    @GetMapping("/edit/{id}")
+    public ModelAndView edit(@PathVariable Long id){
+        ModelAndView modelAndView = new ModelAndView("/edit");
+        modelAndView.addObject("productEdit",iProductRepository.findById(id).get());
+        return modelAndView;
     }
+    @PostMapping("/edit")
+    public ModelAndView edit(Products products){
+        ModelAndView modelAndView = new ModelAndView("redirect:/products");
+        iProductRepository.save(products);
+        return modelAndView;
+    }
+
+
+
+    @PostMapping("/search")
+    public ModelAndView edit(@RequestParam(name = "search") String search){
+        ModelAndView modelAndView = new ModelAndView("/search");
+        List<Products> listSearch = iProductRepository.findAllByNameContaining(search);
+        modelAndView.addObject("lists",listSearch);
+        return modelAndView;
+    }
+
 }

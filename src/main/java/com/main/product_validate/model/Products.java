@@ -3,31 +3,31 @@ package com.main.product_validate.model;
 import javax.persistence.*;
 
 @Entity
-public class Product {
+public class Products {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    @GeneratedValue (strategy = GenerationType.IDENTITY)
+    private Long id;
     private String name;
     private String code;
     private String description;
-    private boolean price;
+    private double price;
+    private String dateTime;
 
-    public Product() {
-    }
-
-    public Product(int id, String name, String code, String description, boolean price) {
+    public Products(){}
+    public Products(Long id, String name, String code, String description, double price, String dateTime) {
         this.id = id;
         this.name = name;
         this.code = code;
         this.description = description;
         this.price = price;
+        this.dateTime = dateTime;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -55,11 +55,19 @@ public class Product {
         this.description = description;
     }
 
-    public boolean isPrice() {
+    public double getPrice() {
         return price;
     }
 
-    public void setPrice(boolean price) {
+    public void setPrice(double price) {
         this.price = price;
+    }
+
+    public String getDateTime() {
+        return dateTime;
+    }
+
+    public void setDateTime(String dateTime) {
+        this.dateTime = dateTime;
     }
 }

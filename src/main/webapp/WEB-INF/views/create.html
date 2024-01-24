@@ -1,10 +1,45 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Create</title>
 </head>
+<style>
+    .notify{
+        color: yellow;
+    }
+</style>
 <body>
+<h3>Create Products</h3>
+<a href="/products">Quay lai list</a>
 
+<form th:action="@{/products/save}" th:object="${product}" method="post">
+    <div>
+        <label for="name">Name</label>
+        <input id="name" type="text" th:field="*{name}" placeholder="Tên"/>
+        <p class="notify" th:if="${#fields.hasErrors('name')}" >tên cần dài từ 6-32 ký tự</p>
+    </div>
+    <div>
+        <label for="code">Code</label>
+        <input id="code" type="text" th:field="*{code}" placeholder="code"/>
+        <p class="notify" th:if="${#fields.hasErrors('code')}"></p>
+    </div>
+    <div>
+        <label for="description">Description</label>
+        <input id="description" type="text" th:field="*{description}" placeholder="Mô tả"/>
+        <p class="notify" th:if="${#fields.hasErrors('description')}"></p>
+    </div>
+    <div>
+        <label for="price">Price</label>
+        <input id="price" type="number" th:field="*{price}" placeholder="Giá"/>
+    </div>
+    <div>
+        <label for="date">Date</label>
+        <input id="date" type="date" th:field="*{dateTime}"/>
+    </div>
+    <div>
+        <input type="submit" value="Save">
+    </div>
+</form>
 </body>
 </html>
